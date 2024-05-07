@@ -33,6 +33,6 @@ describe("imageToText", () => {
     expect(mocks.worker.recognize).toHaveBeenCalledWith(images[0]);
     expect(mocks.worker.recognize).toHaveBeenCalledWith(images[1]);
     expect(mocks.worker.terminate).toHaveBeenCalled();
-    expect(result).toBe("texttext");
+    expect(result).toBe("text\ntext");
   });
 });

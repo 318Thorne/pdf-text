@@ -11,5 +11,5 @@ export const imageToText = async (images: string[]): Promise<string> => {
   }
 
   await worker.terminate();
-  return pdfText.join("");
+  return pdfText.join("\n");
 };
