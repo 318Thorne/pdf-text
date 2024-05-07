@@ -3,9 +3,12 @@ import { imageToText } from "../utils/imageToText";
 import { convertToImage, getPdfFromBuffer } from "../utils/pdf";
 import { useDropzone } from "react-dropzone";
 import { ClipboardCopy } from "./ClipboardCopy";
+import { LoaderCircle } from "lucide-react";
 
 export const PdfReader: React.FC = () => {
   const [text, setText] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "application/pdf": [".pdf"],
@@ -25,9 +28,12 @@ export const PdfReader: React.FC = () => {
       const text = await imageToText(images);
       setText(text);
     }
+    setLoading(false);
   };
 
   const handleFileChange = (file: File) => {
+    setLoading(true);
+    setText("");
     const fileReader = new FileReader();
     fileReader.onloadend = handleFileRead;
     fileReader.readAsArrayBuffer(file);
@@ -48,6 +54,12 @@ export const PdfReader: React.FC = () => {
           <input {...getInputProps()} />
         </label>
       </div>
+      {loading && (
+        <div className="flex flex-col items-center">
+          <LoaderCircle size={32} className="animate-spin text-gray-500 ml-2" />
+          <p className="text-center">Reading your file...</p>
+        </div>
+      )}
       {text && (
         <div className="text-left border border-black rounded-md relative h-[60vh]">
           <ClipboardCopy textToCopy={text} />
