@@ -1,5 +1,5 @@
 import { beforeEach, describe, it, vi, expect } from "vitest";
-import { imageToText } from "../imageToText";
+import { convertImagesToText } from "../imageToText";
 import { createWorker } from "tesseract.js";
 
 const mocks = vi.hoisted(() => {
@@ -27,7 +27,7 @@ describe("imageToText", () => {
   it("should call Tesseract.recognize with images", async () => {
     const images = ["image1", "image2"];
 
-    const result = await imageToText(images);
+    const result = await convertImagesToText(images);
 
     expect(createWorker).toHaveBeenCalledWith("eng");
     expect(mocks.worker.recognize).toHaveBeenCalledWith(images[0]);

@@ -1,15 +1,25 @@
-import { createWorker } from "tesseract.js";
+import { Worker, createWorker } from "tesseract.js";
 
-export const imageToText = async (images: string[]): Promise<string> => {
+export const convertImagesToText = async (
+  images: string[]
+): Promise<string> => {
   const worker = await createWorker("eng");
-  const pdfText = [];
-  for (const image of images) {
-    const {
-      data: { text },
-    } = await worker.recognize(image);
-    pdfText.push(text);
-  }
-
+  const imageToText = buildImageToTextConverter(worker);
+  const text = imageToText(images);
   await worker.terminate();
-  return pdfText.join("\n");
+  return text;
 };
+
+export const buildImageToTextConverter =
+  (worker: Worker) =>
+  async (images: string[]): Promise<string> => {
+    const pdfText = [];
+    for (const image of images) {
+      const {
+        data: { text },
+      } = await worker.recognize(image);
+      pdfText.push(text);
+    }
+
+    return pdfText.join("\n");
+  };
