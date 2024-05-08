@@ -36,7 +36,7 @@ export const ClipboardCopy: React.FC<ClipboardCopyProps> = ({ textToCopy }) => {
           role="button"
           onClick={handleCopyClicked}
         >
-          <Copy />
+          <Copy className="hover:text-black/50" />
         </span>
       )}
     </div>

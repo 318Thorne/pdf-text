@@ -1,15 +1,26 @@
 import { useState } from "react";
 import { imageToText } from "../utils/imageToText";
 import { convertToImage, getPdfFromBuffer } from "../utils/pdf";
-import { useDropzone } from "react-dropzone";
-import { ClipboardCopy } from "./ClipboardCopy";
-import { LoaderCircle } from "lucide-react";
+import { useDropzone, ErrorCode } from "react-dropzone";
+import { Dropzone } from "./Dropzone";
+import { Loader } from "./Loader";
+import { TextBlock } from "./TextBlock";
+
+const MAX_FILE_SIZE_IN_MB = 25;
+
+const ERRORS: Record<string, string> = {
+  [ErrorCode.FileInvalidType]: "Your file must be a PDF.",
+  [ErrorCode.FileTooLarge]: `Your file must not exceed ${MAX_FILE_SIZE_IN_MB}MB.`,
+  [ErrorCode.TooManyFiles]: "You can only upload one file at a time.",
+};
 
 export const PdfReader: React.FC = () => {
-  const [text, setText] = useState<string>("");
+  const [text, setText] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const hasProcessed = !loading && text !== undefined;
+
+  const dropzoneProps = useDropzone({
     accept: {
       "application/pdf": [".pdf"],
     },
@@ -17,57 +28,47 @@ export const PdfReader: React.FC = () => {
       handleFileChange(files[0]);
     },
     maxFiles: 1,
-    maxSize: 25000000, // 25MB
+    maxSize: MAX_FILE_SIZE_IN_MB * 1000000, // multiply by 1,000,000 to convert MB to bytes
   });
 
   const handleFileRead = async (e: ProgressEvent<FileReader>) => {
-    const content = e.target?.result;
-    if (content instanceof ArrayBuffer) {
-      const pdf = await getPdfFromBuffer(content);
-      const images = await convertToImage(pdf);
-      const text = await imageToText(images);
-      setText(text);
+    try {
+      const content = e.target?.result;
+      if (content instanceof ArrayBuffer) {
+        const pdf = await getPdfFromBuffer(content);
+        const images = await convertToImage(pdf);
+        const text = await imageToText(images);
+        setText(text);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleFileChange = (file: File) => {
     setLoading(true);
     setText("");
-    const fileReader = new FileReader();
-    fileReader.onloadend = handleFileRead;
-    fileReader.readAsArrayBuffer(file);
+    try {
+      const fileReader = new FileReader();
+      fileReader.onloadend = handleFileRead;
+      fileReader.readAsArrayBuffer(file);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   return (
     <>
-      <div
-        {...getRootProps({
-          className:
-            "rounded-lg border border-solid border-gray-300 bg-white hover:brightness-95 bg-clip-border w-[600px] p-12 cursor-pointer mx-auto my-4",
-        })}
-      >
-        <label>
-          <p className="cursor-pointer">
-            Drag 'n' drop your pdf here, or click to select a file
-          </p>
-          <input {...getInputProps()} />
-        </label>
-      </div>
-      {loading && (
-        <div className="flex flex-col items-center">
-          <LoaderCircle size={32} className="animate-spin text-gray-500 ml-2" />
-          <p className="text-center">Reading your file...</p>
-        </div>
-      )}
-      {text && (
-        <div className="text-left border border-black rounded-md relative h-[60vh]">
-          <ClipboardCopy textToCopy={text} />
-          <div className="overflow-auto h-full py-4 px-8">
-            <pre>{text}</pre>
-          </div>
-        </div>
-      )}
+      <Dropzone {...dropzoneProps} customErrors={ERRORS} />
+      <Loader loading={loading} message="Reading your file..." />
+      {hasProcessed &&
+        (text ? (
+          <TextBlock text={text} />
+        ) : (
+          <p>Sorry! could not extract any text from your pdf.</p>
+        ))}
     </>
   );
 };
