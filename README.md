@@ -1,5 +1,7 @@
 # PDF text reader
 
+demo: https://main--dreamy-sunflower-469dc1.netlify.app/
+
 this app was built on the [react](https://react.dev/)-ts [vite](https://vitejs.dev/guide/) template
 
 - [Overview](#Overview)
