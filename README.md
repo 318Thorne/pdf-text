@@ -6,7 +6,7 @@ this app was built on the [react](https://react.dev/)-ts [vite](https://vitejs.d
 - [Technology used](#technology-used)
 - [Running locally](#running-locally)
 
-# Overview
+## Overview
 
 a client side web application for extracting text from a pdf. this application depends on [PDFJS](https://mozilla.github.io/pdf.js/) for converting pdfs first to image and then [Tesseract.js](https://tesseract.projectnaptha.com/) for extracting text from the images. It outputs the result in an easily copyable block on the web page.
 
