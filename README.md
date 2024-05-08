@@ -1,30 +1,53 @@
-# React + TypeScript + Vite
+# PDF text reader
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+this app was built on the [react](https://react.dev/)-ts [vite](https://vitejs.dev/guide/) template
 
-Currently, two official plugins are available:
+- [Overview](#Overview)
+- [Technology used](#technology-used)
+- [Running locally](#running-locally)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Overview
 
-## Expanding the ESLint configuration
+a client side web application for extracting text from a pdf. this application depends on [PDFJS](https://mozilla.github.io/pdf.js/) for converting pdfs first to image and then [Tesseract.js](https://tesseract.projectnaptha.com/) for extracting text from the images. It outputs the result in an easily copyable block on the web page.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+[for a demonstration see here](https://main--dreamy-sunflower-469dc1.netlify.app/)
 
-- Configure the top-level `parserOptions` property like this:
+## Technology used
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+- [TypeScript](https://www.typescriptlang.org/)
+- [vite](https://vitejs.dev/guide/)
+- [React](https://reactjs.org/)
+- [Yarn](https://yarnpkg.com/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Shadcdn](https://ui.shadcn.com/)
+- [PDFJS](https://mozilla.github.io/pdf.js/)
+- [Tesseract.js](https://tesseract.projectnaptha.com/)
+
+## running locally
+
+- clone the repo
+
+```sh
+git clone git@github.com:318Thorne/pdf-text.git
+cd pdf-text
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- install dependencies
+
+```sh
+yarn
+```
+
+- run dev
+
+```sh
+yarn dev
+```
+
+## testing
+
+this project uses vitest and react testing library for unit testing. to test
+
+```sh
+yarn test
+```
